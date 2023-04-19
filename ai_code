@@ -1,0 +1,582 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[3]:
+
+
+import numpy as np 
+import pandas as pd
+
+
+# In[4]:
+
+
+movies = pd.read_csv('tmdb_5000_movies.csv')
+credits = pd.read_csv('tmdb_5000_credits.csv') 
+
+
+# In[5]:
+
+
+movies.head(1)
+
+
+# In[6]:
+
+
+credits.head(1)
+
+
+# In[7]:
+
+
+movies = movies.merge(credits,on='title')
+
+
+# In[8]:
+
+
+movies.merge(credits,on='title')
+
+
+# In[9]:
+
+
+movies = movies.merge(credits,on='title')
+
+
+# In[10]:
+
+
+movies.head()
+# budget
+# homepage
+# id
+# original_language
+# original_title
+# popularity
+# production_comapny
+# production_countries
+# release-date(not sure)
+
+
+# In[11]:
+
+
+movies = movies[['movie_id','title','overview','genres','keywords','cast','crew']]
+
+
+# In[12]:
+
+
+movies.head()
+
+
+# In[13]:
+
+
+movies = movies[['movie_id_x','title','overview','genres','keywords','cast_x','crew_x']]
+
+
+# In[14]:
+
+
+movies.head()
+
+
+# In[15]:
+
+
+movies.isnull().sum()
+
+
+# In[16]:
+
+
+movies.dropna()
+
+
+# In[17]:
+
+
+movies.isnull().sum()
+
+
+# In[18]:
+
+
+movies.dropna(inplace=True)
+
+
+# In[19]:
+
+
+movies.isnull().sum()
+
+
+# In[20]:
+
+
+movies.dupliacted().sum()
+
+
+# In[21]:
+
+
+movies.duplicated().sum()
+
+
+# In[22]:
+
+
+movies.dropna(inplace=True)
+
+
+# In[23]:
+
+
+movies.duplicated().sum()
+
+
+# In[24]:
+
+
+movies.iloc[0].genres
+
+
+# In[25]:
+
+
+def convert(obj):
+    L=[]
+    for i in obj:
+        L.append(i['name'])
+        return L
+
+
+# In[26]:
+
+
+import ast
+ast.literal_eval()
+
+
+# In[27]:
+
+
+import ast
+
+
+# In[28]:
+
+
+ast.literal_eval()
+
+
+# In[29]:
+
+
+def convert(text):
+    L = []
+    for i in ast.literal_eval(text):
+        L.append(i['name']) 
+    return L 
+
+
+# In[30]:
+
+
+movies['genres'].apply(convert)
+
+
+# In[31]:
+
+
+movies['genres'] = movies['genres'].apply(convert)
+movies.head()
+
+
+# In[32]:
+
+
+movies['keywords'].apply(convert)
+
+
+# In[33]:
+
+
+movies['keywords'] = movies['keywords'].apply(convert)
+movies.head()
+
+
+# In[34]:
+
+
+def convert3(text):
+    L = []
+    counter = 0
+    for i in ast.literal_eval(text):
+        if counter < 3:
+            L.append(i['name'])
+        counter+=1
+    return L 
+
+
+# In[35]:
+
+
+movies['cast'].apply(convert3)
+
+
+# In[36]:
+
+
+def convert3(obj):
+    L = []
+    counter = 0
+    for i in ast.literal_eval(obj):
+        if counter < 3:
+            L.append(i['name'])
+        counter+=1
+    return L 
+
+
+# In[37]:
+
+
+movies['cast_x'].apply(convert3)
+
+
+# In[38]:
+
+
+movies['cast_x'] = movies['cast_x'].apply(convert)
+movies.head()
+
+
+# In[39]:
+
+
+def fetch_director(obj):
+    L = []
+    for i in ast.literal_eval(obj):
+        if i['job'] == 'Director':
+            L.append(i['name'])
+    return L 
+
+
+# In[40]:
+
+
+movies['crew_x'] = movies['crew_x'].apply(fetch_director)
+
+
+# In[41]:
+
+
+movies.head()
+
+
+# In[42]:
+
+
+movies['overview'].apply(lambda x:x.split())
+
+
+# In[43]:
+
+
+movies['overview'] = movies['overview'].apply(lambda x:x.split())
+
+
+# In[44]:
+
+
+movies.head()
+
+
+# In[45]:
+
+
+movies['genres'].apply(lambda x:[i.replace(" ","")for i in x])
+
+
+# In[46]:
+
+
+movies['genres'] = movies['genres'].apply(lambda x:[i.replace(" ","")for i in x])
+movies['keywords'] = movies['keywords'].apply(lambda x:[i.replace(" ","")for i in x])
+movies['cast_x'] = movies['cast_x'].apply(lambda x:[i.replace(" ","")for i in x])
+movies['crew_x'] = movies['crew_x'].apply(lambda x:[i.replace(" ","")for i in x])
+
+
+# In[47]:
+
+
+movies.head()
+
+
+# In[48]:
+
+
+movies['cast'] = movies['cast_x']
+
+
+# In[49]:
+
+
+movies.head()
+
+
+# In[50]:
+
+
+movies['crew']=movies['crew_x']
+
+
+# In[51]:
+
+
+movies.head()
+
+
+# In[52]:
+
+
+movies['movie_id']=movies['movie_id_x']
+
+
+# In[53]:
+
+
+movies = movies[['movie_id','title','overview','genres','keywords','cast','crew']]
+
+
+# In[54]:
+
+
+movies.head()
+
+
+# In[55]:
+
+
+movies['tags'] = movies['overview'] + movies['genres'] + movies['keywords'] + movies['cast'] + movies['crew']
+
+
+# In[56]:
+
+
+new_df=movies[['movie_id','title','tags']]
+
+
+# In[57]:
+
+
+new_df['tags'] = new_df['tags'].apply(lambda x:" ".join(x))
+
+
+# In[58]:
+
+
+new_df.head()
+
+
+# In[59]:
+
+
+new_df['tags'] = new_df['tags'].apply(lambda x:x.lower())
+
+
+# In[60]:
+
+
+new_df.head()
+
+
+# In[61]:
+
+
+from sklearn.feature_extraction.text import CountVectorizer
+cv = CountVectorizer(max_features=5000,stop_words='english')
+
+
+# In[62]:
+
+
+cv.fit_transform(new_df['tags']).toarray().shape
+
+
+# In[63]:
+
+
+vectors = cv.fit_transform(new_df['tags']).toarray()
+
+
+# In[64]:
+
+
+vectors
+
+
+# In[65]:
+
+
+pip install nltk
+
+
+# In[67]:
+
+
+import nltk
+
+
+# In[68]:
+
+
+from nltk.stem.porter import PorterStemmer
+ps= PorterStemmer()
+
+
+# In[69]:
+
+
+def stem(text):
+    y=[]
+    
+    for i in text.split():
+        y.append(ps.stem(i))
+        
+    return " ".join(y) 
+
+
+# In[70]:
+
+
+new_df['tags'][0]
+
+
+# In[71]:
+
+
+new_df['tags'].apply(stem)
+
+
+# In[76]:
+
+
+new_df['tags'] = new_df['tags'].apply(stem)
+
+
+# In[72]:
+
+
+cv.get_feature_names()
+
+
+# In[73]:
+
+
+from sklearn.metrics.pairwise import cosine_similarity
+
+
+# In[74]:
+
+
+cosine_similarity(vectors)
+
+
+# In[75]:
+
+
+cosine_similarity(vectors).shape
+
+
+# In[76]:
+
+
+similarity = cosine_similarity(vectors)
+
+
+# In[77]:
+
+
+similarity
+
+
+# In[78]:
+
+
+def recommend(movie):
+    movie_index = new_df[new_df['title'] == movie].index[0]
+    distances = similarity[movie_index]
+    movies_list = sorted(list(enumerate(distances)),reverse=True,key = lambda x:x[1])[1:6]
+    
+    for i in movies_list:
+        print(i[0])
+
+
+# In[79]:
+
+
+recommend('Avatar')
+
+
+# In[80]:
+
+
+def recommend(movie):
+    movie_index = new_df[new_df['title'] == movie].index[0]
+    distances = similarity[movie_index]
+    movies_list = sorted(list(enumerate(distances)),reverse=True,key = lambda x:x[1])[1:6]
+    
+    for i in movies_list:
+        print(new_df.iloc[i[0]].title)
+
+
+# In[92]:
+
+
+recommend('Avatar')
+
+
+# In[82]:
+
+
+import pickle
+
+
+# In[83]:
+
+
+pickle.dump(new_df,open('movies.pkl','wb'))
+
+
+# In[84]:
+
+
+new_df
+
+
+# In[86]:
+
+
+new_df['title'].values
+
+
+# In[87]:
+
+
+new_df.to_dict()
+
+
+# In[88]:
+
+
+pickle.dump(new_df.to_dict(),open('movie_dict.pkl','wb'))
+
+
+# In[89]:
+
+
+pickle.dump(similarity,open('similarity.pkl','wb'))
